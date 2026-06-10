@@ -34,3 +34,17 @@ Route::get('/servo/command', function () {
 
     return response()->json(['command' => $latest ? $latest->command : 'close']);
 });
+
+// GET /api/sensor/latest ← dipakai Roblox
+Route::get('/sensor/latest', function () {
+    $latest = SensorData::where('device_id', 'esp32-silo-01')
+                        ->where('sensor_name', 'load_cell')
+                        ->latest()
+                        ->first();
+
+    if (!$latest) {
+        return response()->json(['status' => 'error', 'message' => 'No data'], 404);
+    }
+
+    return response()->json(['status' => 'success', 'data' => $latest]);
+});
